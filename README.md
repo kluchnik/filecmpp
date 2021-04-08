@@ -5,7 +5,7 @@ File comparison plus (local and remote)
 .  
 |- filecmpp.py (Запуск приложения)  
 |- lib  
-|&nbsp;&nbsp;&nbsp;&nbsp;|- __init__.py  
+|&nbsp;&nbsp;&nbsp;&nbsp;|- \_\_init\_\_.py  
 |&nbsp;&nbsp;&nbsp;&nbsp;|- collection_info.py (Сбор информации о файлах)  
 |&nbsp;&nbsp;&nbsp;&nbsp;|- find_file_bash.py (Поиск файлов через bash)  
 |&nbsp;&nbsp;&nbsp;&nbsp;|- find_file_ssh.py (Поиск файлов через ssh)  
