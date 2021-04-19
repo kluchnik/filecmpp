@@ -1,5 +1,4 @@
 import pytest
-import subprocess
 
 import lib.find_file_bash
 
@@ -40,6 +39,10 @@ data_bash = (
         'out': (('test-1', 'test-2'), 'Error find:\nnone\n')
     }
     )
+
+def test_get_reference_parameters():
+    assert lib.find_file_bash.get_reference_parameters(only_required=True) == ('directory', )
+    assert lib.find_file_bash.get_reference_parameters(only_required=False) == ('directory', 'extra_param', 'ignore_name', 'check_md5sum')
 
 @pytest.mark.parametrize('item', data_cfg)
 def test_config_find(item):

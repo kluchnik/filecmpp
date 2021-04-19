@@ -3,30 +3,28 @@
 ver.1.1
 Пример использования:
 --------------------
-import comp_file_ssh
+import find_file_bash
 
-comp_file_ssh_ = comp_file_ssh.Comparison()
-comp_file_ssh_.get_parameters()
-comp_file_ssh_.delete_pc_parameters('pc2')
-comp_file_ssh_.get_parameters()
-comp_file_ssh_.clear_parameters()
-comp_file_ssh_.get_parameters()
-
-parameters_pc1 = {'ip': '192.168.1.11', 'port': '22', 'username': 'root', 'password': '12345678', 'directory': '/tmp'}
-parameters_pc2 = {'ip': '192.168.1.12', 'port': '22', 'username': 'root', 'password': '12345678', 'directory': '/tmp'}
-parameters_pc1 = {'ip': '127.0.0.1', 'port': '22', 'username': 'user', 'password': '12345678', 'directory': '/tmp/test1'}
-parameters_pc2 = {'ip': '127.0.0.1', 'port': '22', 'username': 'user', 'password': '12345678', 'directory': '/tmp/test2'}
-parameters = {'pc1': parameters_pc1, 'pc2': parameters_pc2}
-comp_file_ssh_.set_parameters(**parameters)
-comp_file_ssh_.get_parameters()
-
-comp_file_ssh_.get_report()
+result, error = find_file_bash.run(directory='/tmp')
+print('result:\\n{}\\nerror:\\n{}',format(result, error))
+find_file_bash.run(directory='/tmp', extra_param='-maxdepth 1', ignore_name='*.txt', check_md5sum=True)
+print('result:\\n{}\\nerror:\\n{}',format(result, error))
+parameters = {'directory': '/tmp', 'extra_param': '-maxdepth 1', 'ignore_name': '*.txt', 'check_md5sum': True}
+find_file_bash.run(*parameters)
+print('result:\\n{}\\nerror:\\n{}',format(result, error))
 
 --------------------
 '''
 
 import sys
 import subprocess
+
+def get_reference_parameters(only_required=True):
+    ''' Возвращает список параметров '''
+    if only_required:
+        return ('directory', )
+    else:
+        return ('directory', 'extra_param', 'ignore_name', 'check_md5sum')
 
 def config_find(directory, extra_param='', ignore_name='.*', check_md5sum=False):
     '''
@@ -77,7 +75,7 @@ def run(directory, extra_param='', ignore_name='.*', check_md5sum=False):
            opts: str extra_param: - дополнительные параметры поиска см. man find, не обязательный параметр (значение по умолчанию '')
            opts: str ignore_name - имя файлов, которые необходимо исключить из поиска, не обязательный параметр (значение по умолчанию '.*')
            opts: bool check_md5sum - опция подсчета контрольной суммы по алгоритму md5 (значение по умолчанию False)
-       out: cmd_find | None
+       out: (result, error)
     '''
     config_find_cmd, config_find_err = config_find(directory, extra_param, ignore_name, check_md5sum)
     if not config_find_err:
