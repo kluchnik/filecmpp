@@ -49,7 +49,17 @@ def test_config_find(item):
     assert lib.find_file_bash.config_find(**item['in']) == item['out']
 
 @pytest.mark.parametrize('item', data_bash)
-def test_echo_null_byte(fake_process, item):
+def test_bash(fake_process, item):
     fake_process.register_subprocess(['/bin/bash', '-c', item['in']['cmd']], stdout=item['in']['stdout'], stderr=item['in']['stderr'])
     assert lib.find_file_bash.bash(item['in']['cmd']) == item['out']
 
+def test_run(fake_process):
+    data_in = {'directory': '/tmp', 'extra_param': '', 'ignore_name': '.*', 'check_md5sum': False}
+    data_cmd = {
+        'cmd': 'find /tmp  -type f -not -name ".*" -printf "%p\t%h\t%f\t%u\t%g\t%s\t%TY-%Tm-%Td %TT\t" -exec bash -c \'echo -ne "-\n";\' excec-sh {} \';\'',
+        'stdout': 'test-1\ntest-2\n',
+        'stderr': 'none\n'
+        }
+    data_out = (('test-1', 'test-2'), 'Error find:\nnone\n')
+    fake_process.register_subprocess(['/bin/bash', '-c', data_cmd['cmd']], stdout=data_cmd['stdout'], stderr=data_cmd['stderr'])
+    assert lib.find_file_bash.run(**data_in) == data_out

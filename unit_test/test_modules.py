@@ -5,7 +5,8 @@ data_modules = (
     'config',
     'filecmpp',
     'lib.find_file_bash',
-    'lib.collection_info'
+    'lib.collection_info',
+    'lib.check_config'
     )
 
 @pytest.mark.parametrize('item', data_modules)

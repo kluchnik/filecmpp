@@ -2,57 +2,72 @@ import pytest
 
 import lib.collection_info
 
-test_cases = (
-    {
-       'description': 'Значение по умолчанию для config',
-       'setup': '',
-       'set': '',
-       'get': 'collection.get_config()',
-       'expectations': {}
-    },
-    {
-       'description': 'Значение по умолчанию для config_status',
-       'setup': '',
-       'set': '',
-       'get': 'collection.get_config_status()',
-       'expectations': (False, 'No configuration check was performed')
-    },
-    {
-       'description': 'Значение по умолчанию для file_list',
-       'setup': '',
-       'set': '',
-       'get': 'collection.get_file_list()',
-       'expectations': {}
-    },
-    {
-       'description': 'Провека метода set_config()',
-       'setup': '',
-       'set': "collection.set_config({'method': 'bash', 'parameters': {'pc':{'directory': '/tmp'}}})",
-       'get': 'collection.get_config_status()',
-       'expectations': (True, 'Verification was successful')
-    },
-    {
-       'description': 'Провека метода set_config()',
-       'setup': '',
-       'set': "collection.set_config({'method': 'bash', \
-'parameters': {'pc':{'directory': '/tmp', 'extra_param': '', 'ignore_name': '.*', 'check_md5sum': False}}})",
-       'get': 'collection.get_config_status()',
-       'expectations': (True, 'Verification was successful')
-    },
-    {
-       'description': 'Провека метода clear_config()',
-       'setup': "collection.set_config({'method': 'bash', 'parameters': {'pc':{'directory': '/tmp'}}})",
-       'set': 'collection.clear_config()',
-       'get': 'collection.get_config()',
-       'expectations': {}
+def test_possitive(fake_process):
+    data_config = {
+        'report': 'stdout',
+        'show': 'all',
+        'show_filter': '',
+        'method': 'bash',
+        'extra_param': '',
+        'ignore_name': '.*',
+        'check_md5sum': False,
+        'parameters': {
+            'target_1': {
+                'directory': '/tmp/1'
+            },
+            'target_2': {
+                'directory': '/tmp/2'
+            }
+        }
     }
-    )
 
-@pytest.mark.parametrize('item', test_cases)
-def test_modules(item):
-	collection = lib.collection_info.Collection()
-	print(item['description'])
-	exec(item['setup'])
-	exec(item['set'])
-	result = eval(item['get'])
-	assert result == item['expectations']
+    data_find_config = {
+        'target_1': {
+            'directory': '/tmp/1',
+            'extra_param': '',
+            'ignore_name': '.*',
+            'check_md5sum': False
+        },
+        'target_2': {
+            'directory': '/tmp/2',
+            'extra_param': '',
+            'ignore_name': '.*',
+            'check_md5sum': False
+        }
+    }
+
+    data_cmd_1 = {
+        'cmd': 'find /tmp/1  -type f -not -name ".*" -printf "%p\t%h\t%f\t%u\t%g\t%s\t%TY-%Tm-%Td %TT\t" -exec bash -c \'echo -ne "-\n";\' excec-sh {} \';\'',
+        'stdout': 'test-1\ntest-2\n',
+        'stderr': ''
+        }
+
+    data_cmd_2 = {
+        'cmd': 'find /tmp/2  -type f -not -name ".*" -printf "%p\t%h\t%f\t%u\t%g\t%s\t%TY-%Tm-%Td %TT\t" -exec bash -c \'echo -ne "-\n";\' excec-sh {} \';\'',
+        'stdout': 'test-2\ntest-3\n',
+        'stderr': ''
+        }
+
+    data_out = {
+        'target_1': {
+            'result': ('test-1', 'test-2'),
+            'error': ''
+        },
+        'target_2': {
+            'result': ('test-2', 'test-3'),
+            'error': ''
+        }
+    }
+    fake_process.register_subprocess(['/bin/bash', '-c', data_cmd_1['cmd']], stdout=data_cmd_1['stdout'], stderr=data_cmd_1['stderr'])
+    fake_process.register_subprocess(['/bin/bash', '-c', data_cmd_2['cmd']], stdout=data_cmd_2['stdout'], stderr=data_cmd_2['stderr'])
+    
+    collection = lib.collection_info.Collection()
+    collection.set_config(data_config)
+    collection.check_config()
+    assert collection.get_config_status()[0] == True
+    assert collection.get_find_module() is not None
+    assert collection.get_find_config() == data_find_config
+    collection.run()
+    assert collection.get_find_status()[0] == True
+    print(collection.get_find_result())
+    assert collection.get_find_result() == data_out
