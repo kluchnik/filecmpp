@@ -68,6 +68,4 @@ def test_possitive(fake_process):
     assert collection.get_find_module() is not None
     assert collection.get_find_config() == data_find_config
     collection.run()
-    assert collection.get_find_status()[0] == True
-    print(collection.get_find_result())
     assert collection.get_find_result() == data_out
