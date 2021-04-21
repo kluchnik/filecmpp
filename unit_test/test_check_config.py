@@ -26,77 +26,88 @@ test_cases = (
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
        'config': {'report': 'stdout'},
-       'expectations': (False, 'Error: missing parameter in the configuration "show"', None, None)
+       'expectations': (False, 'Error: missing parameter in the configuration "show_type"', None, None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': None},
-       'expectations': (False, 'Error: the show "None" not found, use one of the " {} "'.format(' | '.join(lib.check_config.get_show_type())), None, None)
+       'config': {'report': 'stdout', 'show_type': None},
+       'expectations': (False, 'Error: the show_type "None" not found, use one of the " {} "'.format(' | '.join(lib.check_config.get_show_type())), None, None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all'},
+       'config': {'report': 'stdout', 'show_type': 'path'},
+       'expectations': (False, 'Error: missing parameter in the configuration "show_select"', None, None)
+    },
+    {
+       'description': 'Проверка метода lib.check_config.run() - negative',
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': None},
+       'expectations': (False, 'Error: the show_select "None" not found, use one of the " {} "'.format(' | '.join(lib.check_config.get_show_select())), None, None)
+    },
+    {
+       'description': 'Проверка метода lib.check_config.run() - negative',
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all'},
        'expectations': (False, 'Error: missing parameter in the configuration "method"', None, None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': None},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': None},
        'expectations': (False, 'Error: the method "None" not found, use one of the " {} "'.format(' | '.join(lib.check_config.get_method_list())), None, None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'test'},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'test'},
        'expectations': (False, 'Error: import module lib.none', None, None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash'},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash'},
        'expectations': (False, 'Error: missing parameter in the configuration "parameters"', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': ''},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': ''},
        'expectations': (False, 'Error: the config["parameters"] is not a dictionary', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': []},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': []},
        'expectations': (False, 'Error: the config["parameters"] is not a dictionary', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': {}},
        'expectations': (False, 'Error: the parameter dictionary is empty', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {'target_1': ''}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': {'target_1': ''}},
        'expectations': (False, 'Error: the config["parameters"]["target_1"] is not a dictionary', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {'target_1': []}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': {'target_1': []}},
        'expectations': (False, 'Error: the config["parameters"]["target_1"] is not a dictionary', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {'target_1': {}}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': {'target_1': {}}},
        'expectations': (False, 'Error: the target_1 reference parameters "directory" not found', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - negative',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {'target_1': {'test': None}}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash', 'parameters': {'target_1': {'test': None}}},
        'expectations': (False, 'Error: the target_1 reference parameters "directory" not found', '{}'.format(lib.check_config.get_module('bash')), None)
     },
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
-       'config': {'report': 'stdout', 'show': 'all', 'method': 'bash', 'parameters': {'target_1': {'test': None, 'directory': '/tmp'}}},
+       'config': {'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
+           'parameters': {'target_1': {'test': None, 'directory': '/tmp'}}},
        'expectations': (True, 'Verification was successful', '{}'.format(lib.check_config.get_module('bash')), {'target_1': {'directory': '/tmp'}})
     },
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
        'config': {
-           'report': 'stdout', 'show': 'all', 'method': 'bash',
+           'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
            'parameters': {'target_1': {'directory': '/tmp/1'}, 'target_2': {'directory': '/tmp/2'}}
            },
        'expectations': (True, 'Verification was successful', '{}'.format(lib.check_config.get_module('bash')), 
@@ -105,7 +116,7 @@ test_cases = (
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
        'config': {
-           'report': 'stdout', 'show': 'all', 'method': 'bash',
+           'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
            'extra_param': '-maxdepth 1',
            'parameters': {'target_1': {'test': None, 'directory': '/tmp'}}
            },
@@ -115,7 +126,7 @@ test_cases = (
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
        'config': {
-           'report': 'stdout', 'show': 'all', 'method': 'bash',
+           'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
            'ignore_name': '.*',
            'parameters': {'target_1': {'test': None, 'directory': '/tmp'}}
            },
@@ -125,7 +136,7 @@ test_cases = (
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
        'config': {
-           'report': 'stdout', 'show': 'all', 'method': 'bash',
+           'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
            'check_md5sum': True,
            'parameters': {'target_1': {'test': None, 'directory': '/tmp'}}
            },
@@ -135,7 +146,7 @@ test_cases = (
     {
        'description': 'Проверка метода lib.check_config.run() - possitive',
        'config': {
-           'report': 'stdout', 'show': 'all', 'method': 'bash',
+           'report': 'stdout', 'show_type': 'path', 'show_select': 'all', 'method': 'bash',
            'extra_param': '-maxdepth 1',
            'ignore_name': '.*',
            'check_md5sum': True,

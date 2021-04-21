@@ -7,8 +7,9 @@ Example-1 (Пример для bash):
 	    opts: dict config - входной словарь с параметрами для поиска:
         {
             'report': 'stdout',
-            'show': 'all',
-            'show_filter': '',
+            'show_type': 'path',
+            'show_subtract': '',
+            'show_select': 'all',
             'method': 'bash',
             'extra_param': '',
             'ignore_name': '.*',
@@ -47,8 +48,9 @@ Example-2 (Пример для ssh):
 	    opts: dict config - входной словарь с параметрами для поиска:
         {
             'report': 'stdout',
-            'show': 'all',
-            'show_filter': '',
+            'show_type': 'path',
+            'show_subtract': '',
+            'show_select': 'all',,
             'method': 'bash',
             'extra_param': '-maxdepth 1',
             'ignore_name': '.*',
@@ -98,11 +100,9 @@ Example-2 (Пример для ssh):
         }
 '''
 
-config_module = {
-    'bash': 'lib.find_file_bash',
-    'ssh': None,
-    'test': 'lib.none'
-}
+from lib.config_module import data as config_module
+from lib.report import get_reference_type as get_show_type
+from lib.report import get_reference_select as get_show_select
 
 def get_method_list():
     ''' Возвращает список методов '''
@@ -115,10 +115,6 @@ def get_module(name):
 def get_report_type():
     ''' Возвращает список допустимых значений для вывода отчета '''
     return ('stdout', )
-
-def get_show_type():
-    ''' Возвращает список допустимых значений отображения отчета '''
-    return ('all', 'diff_md5sum', 'diff_size', 'diff_path', 'diff_name')
 
 def run(config):
     ''' Запуск проверки и подготовки конфигурации '''
@@ -139,12 +135,20 @@ def run(config):
         messange = 'Error: the report "{}" not found, use one of the " {} "'.format(config['report'], ' | '.join(get_report_type()))
         return (status, messange, module, result)
 
-    if not 'show' in config.keys():
-        messange = 'Error: missing parameter in the configuration "show"'
+    if not 'show_type' in config.keys():
+        messange = 'Error: missing parameter in the configuration "show_type"'
         return (status, messange, module, result)
     
-    if not config['show'] in get_show_type():
-        messange = 'Error: the show "{}" not found, use one of the " {} "'.format(config['show'], ' | '.join(get_show_type()))
+    if not config['show_type'] in get_show_type():
+        messange = 'Error: the show_type "{}" not found, use one of the " {} "'.format(config['show_type'], ' | '.join(get_show_type()))
+        return (status, messange, module, result)
+
+    if not 'show_select' in config.keys():
+        messange = 'Error: missing parameter in the configuration "show_select"'
+        return (status, messange, module, result)
+    
+    if not config['show_select'] in get_show_select():
+        messange = 'Error: the show_select "{}" not found, use one of the " {} "'.format(config['show_select'], ' | '.join(get_show_select()))
         return (status, messange, module, result)
 
     if not 'method' in config.keys():

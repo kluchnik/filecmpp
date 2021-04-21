@@ -10,11 +10,12 @@ def main():
 
 if __name__ == '__main__':
     try:
-        import config
+        from config import data as config
         main()
     except Exception as exc:
         exc_type, exc_obj, _ = sys.exc_info()
         print('Error config file:\n{}: {}'.format(exc_type.__name__, exc_obj))
+        exit(1)
 
 
 
